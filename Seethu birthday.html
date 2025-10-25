@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Countdown!</title>
+    <!-- Load Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Add Google Font "Inter" -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* This creates the animated gradient background */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        body {
+            /* A beautiful, subtle gradient */
+            background: linear-gradient(-45deg, #23074d, #cc5333, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+    </style>
+    <script>
+        // Configure Tailwind to use "Inter"
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="text-white font-sans min-h-screen flex items-center justify-center overflow-hidden antialiased">
+
+    <!-- Foreground Content -->
+    <div class="z-10 text-center p-8 sm:p-12 bg-black/60 rounded-xl shadow-2xl backdrop-blur-sm max-w-lg mx-4">
+        
+        <!-- Main Heading (will be set by JavaScript) -->
+        <h1 id="main-heading" class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+            Loading...
+        </h1>
+        
+        <!-- Countdown Timer -->
+        <div id="timer" class="flex justify-center gap-4 text-3xl md:text-5xl font-mono">
+            <div>
+                <span id="days" class="font-bold">00</span>
+                <span class="block text-sm font-normal">Days</span>
+            </div>
+            <div>
+                <span id="hours" class="font-bold">00</span>
+                <span class="block text-sm font-normal">Hours</span>
+            </div>
+            <div>
+                <span id="minutes" class="font-bold">00</span> 
+                <span class="block text-sm font-normal">Minutes</span>
+            </div>
+            <div>
+                <span id="seconds" class="font-bold">00</span>
+                <span class="block text-sm font-normal">Seconds</span>
+            </div>
+        </div>
+
+        <!-- Happy Birthday Message (hidden initially) -->
+        <div id="birthday-message" class="hidden text-2xl font-medium text-pink-300 leading-relaxed">
+            <!-- This will be filled by Gemini -->
+        </div>
+    </div>
+
+    <script>
+        // --- START: USER SETTINGS ---
+
+        // 1. Set your friend's name
+        const friendName = "Seethu";
+
+        // 2. Set the birthday date (Year, Month, Day, Time)
+        // Note: Months are 0-indexed (Jan=0, Feb=1, Mar=2, etc.)
+        // This is set for October 26, 2025 at midnight.
+        const birthdayDate = new Date(2025, 9, 26, 0, 0, 0).getTime();
+        
+        // --- END: USER SETTINGS ---
+
+
+        // --- Countdown Timer Logic ---
+        const mainHeading = document.getElementById('main-heading');
+        const timerEl = document.getElementById('timer');
+        const birthdayMessageEl = document.getElementById('birthday-message');
+        
+        // Set the heading text
+        mainHeading.innerText = `${friendName}'s Birthday!`;
+
+        // Get timer elements
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+
+        // --- Gemini API Function ---
+        // This function calls the Gemini API to generate a unique birthday message.
+        /* REMOVED: The entire async function getBirthdayWish(friendName) { ... } has been removed */
+        
+        /* REMOVED: let birthdayFunctionCalled = false; */
+
+        // Update the countdown every second
+        const countdownInterval = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = birthdayDate - now;
+
+            if (distance < 0) {
+                // --- Birthday Has Arrived! ---
+                clearInterval(countdownInterval);
+                timerEl.classList.add('hidden');
+                
+                // Show the custom birthday message
+                mainHeading.innerText = `Happy Birthday, ${friendName}!`;
+                birthdayMessageEl.classList.remove('hidden');
+                birthdayMessageEl.innerText = "HAPPY BIRTHDAY LAUGHING BUDDHA";
+                
+                // Add a nice pulse animation to the final message
+                birthdayMessageEl.classList.add('animate-pulse');
+                birthdayMessageEl.classList.remove('text-pink-300', 'text-2xl');
+                birthdayMessageEl.classList.add('text-pink-400', 'text-3xl'); // Brighter pink and bigger text
+                
+            } else {
+                // --- Countdown in Progress ---
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Add leading zeros with padStart
+                daysEl.innerText = days.toString().padStart(2, '0');
+                hoursEl.innerText = hours.toString().padStart(2, '0');
+                minutesEl.innerText = minutes.toString().padStart(2, '0');
+secondsEl.innerText = seconds.toString().padStart(2, '0');
+            }
+        }, 1000); // Update every second
+
+    </script>
+</body>
+</html>
+
